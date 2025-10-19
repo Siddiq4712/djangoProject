@@ -1,0 +1,10 @@
+/* Custom styles go here */
+body {
+    background-color: #f8f9fa;
+}
+/* Example: Add some margin to images */
+img.book-cover {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 15px;
+}

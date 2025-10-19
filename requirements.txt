@@ -1,0 +1,4 @@
+Django==4.2.11 # Or your preferred stable version
+django-crispy-forms==2.1
+crispy-bootstrap4==2023.1
+djangorestframework==3.15.1 # As per your request, though not fully used in this example
