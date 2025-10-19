@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Book Issued - Admin Notification</title>
+</head>
+<body>
+    <p>Dear Admin,</p>
+    <p>A new book has been issued in the library system:</p>
+    <ul>
+        <li><strong>Book:</strong> {{ borrowed_item.book.title }} by {{ borrowed_item.book.author }}</li>
+        <li><strong>Issued to:</strong> {{ user.username }} ({{ user.email }})</li>
+        <li><strong>Issue Date:</strong> {{ borrowed_item.borrow_date|date:"F d, Y H:i" }}</li>
+        <li><strong>Due Date:</strong> {{ borrowed_item.due_date|date:"F d, Y" }}</li>
+    </ul>
+    <p>You can view all issued books in the admin dashboard.</p>
+    <p>Library Management System</p>
+</body>
+</html>

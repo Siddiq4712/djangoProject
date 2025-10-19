@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script>
+    var ctx = document.getElementById('borrowTrendsChart').getContext('2d');
+    var borrowTrendsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: JSON.parse('{{ chart_labels|safe }}'),
+            datasets: [{
+                label: 'Books Borrowed',
+                data: JSON.parse('{{ chart_data|safe }}'),
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0 // Ensure integer ticks for count
+                    }
+                }]
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Library Analytics Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Users</h5>
+                <p class="card-text display-4">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Books</h5>
+                <p class="card-text display-4">{{ total_books }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning h-100">
+            <div class="card-body">
+                <h5 class="card-title">Currently Borrowed</h5>
+                <p class="card-text display-4">{{ currently_borrowed_books }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-danger h-100">
+            <div class="card-body">
+                <h5 class="card-title">Overdue Books</h5>
+                <p class="card-text display-4">{{ overdue_books_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Borrowing Trends (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="borrowTrendsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Most Borrowed Books (Top 5)</h5>
+            </div>
+            <div class="card-body">
+                {% if most_borrowed_books %}
+                <ul class="list-group list-group-flush">
+                    {% for item in most_borrowed_books %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            "{{ item.book__title }}" by {{ item.book__author }}
+                            <span class="badge badge-primary badge-pill">{{ item.borrow_count }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No borrowing data available yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Other Statistics</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Borrow Records
+                        <span class="badge badge-secondary badge-pill">{{ total_borrowed_records }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Active Borrowers
+                        <span class="badge badge-secondary badge-pill">{{ active_borrowers }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

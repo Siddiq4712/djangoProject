@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'users',
     'books',
     'api',
+    'borrow',        # ADD THIS LINE
+    'notifications', # ADD THIS LINE
+    'analytics',     # ADD THIS LINE
 ]
 
 MIDDLEWARE = [
@@ -93,12 +96,29 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+# RE-ADD THESE FOR IMAGE UPLOADS
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom settings for this project
 LOGIN_REDIRECT_URL = 'book_list' # URL name after successful login
 LOGOUT_REDIRECT_URL = 'user_login' # URL name after successful logout
+LOGIN_URL = 'user_login'
 
 # Crispy Forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# ADD EMAIL SETTINGS (for notifications)
+# For development, this will print emails to the console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# For production, you'd use a real SMTP server:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.example.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your_email@example.com'
+# EMAIL_HOST_PASSWORD = 'your_email_password'
+DEFAULT_FROM_EMAIL = 'no-reply@library.com' # Email address for sending notifications

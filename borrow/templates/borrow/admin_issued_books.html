@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Issued Books{% endblock %}
+
+{% block content %}
+<h2>All Issued Books</h2>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <form method="GET" action="{% url 'admin_issued_books' %}" class="form-inline">
+            <label for="id_status_filter" class="my-1 mr-2">Status:</label>
+            <select name="status" id="id_status_filter" class="custom-select my-1 mr-sm-2">
+                <option value="" {% if not status_filter %}selected{% endif %}>All</option>
+                <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                <option value="returned" {% if status_filter == 'returned' %}selected{% endif %}>Returned</option>
+            </select>
+
+            <div class="form-check form-check-inline my-1 mr-sm-2">
+                <input class="form-check-input" type="checkbox" id="id_overdue" name="overdue" value="true" {% if show_overdue %}checked{% endif %}>
+                <label class="form-check-label" for="id_overdue">Show Overdue Only</label>
+            </div>
+
+            <button type="submit" class="btn btn-info my-1">Apply Filter</button>
+            <a href="{% url 'admin_issued_books' %}" class="btn btn-secondary my-1 ml-2">Clear Filters</a>
+        </form>
+    </div>
+</div>
+
+{% if all_issued_books %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Book Title</th>
+                <th>ISBN</th>
+                <th>Borrowed On</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Overdue</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in all_issued_books %}
+            <tr class="{% if item.is_overdue %}table-danger{% elif item.status == 'active' %}table-warning{% endif %}">
+                <td>{{ item.user.username }}</td>
+                <td><a href="{% url 'book_detail' item.book.pk %}">{{ item.book.title }}</a></td>
+                <td>{{ item.book.isbn }}</td>
+                <td>{{ item.borrow_date|date:"F d, Y" }}</td>
+                <td>{{ item.due_date|date:"F d, Y" }}</td>
+                <td>
+                    {% if item.return_date %}
+                        {{ item.return_date|date:"F d, Y" }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.return_date %}
+                        <span class="badge badge-secondary">Returned</span>
+                    {% else %}
+                        <span class="badge badge-info">Active</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.is_overdue %}
+                        <span class="badge badge-danger">YES</span>
+                    {% else %}
+                        <span class="badge badge-success">NO</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not item.return_date %}
+                        {# Admin can manually return for a user #}
+                        <form action="{% url 'return_book' item.book.pk %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            {# You might want a custom admin return view or confirm popup #}
+                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to mark this book as returned for {{ item.user.username }}?');">Mark Returned</button>
+                        </form>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="alert alert-info">No issued books found matching your criteria.</p>
+{% endif %}
+{% endblock %}

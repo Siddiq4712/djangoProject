@@ -16,9 +16,11 @@
                 <p><strong>Last Name:</strong> {{ user.last_name|default:"N/A" }}</p>
                 <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
                 <p><strong>Last Login:</strong> {{ user.last_login|date:"F d, Y H:i" }}</p>
+                <p><strong>Membership ID:</strong> {{ user.profile.membership_id }}</p> {# ADDED #}
                 <hr>
                 <p>Here you can add more user-specific information later, like a list of borrowed books or preferences.</p>
-                <a href="{% url 'book_list' %}" class="btn btn-secondary">Back to Books</a>
+                <a href="{% url 'library_card' %}" class="btn btn-info mt-2">View Digital Library Card</a> {# ADDED #}
+                <a href="{% url 'book_list' %}" class="btn btn-secondary mt-2">Back to Books</a>
             </div>
         </div>
     </div>

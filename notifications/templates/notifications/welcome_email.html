@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Library Management!</title>
+</head>
+<body>
+    <p>Dear {{ user.username }},</p>
+    <p>Welcome to the Library Management System! We are excited to have you as a member.</p>
+    <p>You can now browse our extensive collection of books, borrow your favorites, and track your reading history.</p>
+    <p>Get started by exploring our books: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'book_list' %}">Browse Books</a></p>
+    <p>If you have any questions, feel free to contact us.</p>
+    <p>Happy reading!</p>
+    <p>The Library Management Team</p>
+</body>
+</html>

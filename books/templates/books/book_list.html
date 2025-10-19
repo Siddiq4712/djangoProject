@@ -1,11 +1,40 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Book List{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Book List</h2>
+    {% if user.is_staff %} {# Only staff can add #}
     <a href="{% url 'book_create' %}" class="btn btn-primary">Add New Book</a>
+    {% endif %}
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <form method="GET" action="{% url 'book_list' %}" class="form-inline">
+            <input type="hidden" name="q" value="{{ q }}"> {# Keep existing search query if present #}
+            
+            <label for="id_availability" class="my-1 mr-2">Filter:</label>
+            <select name="availability" id="id_availability" class="custom-select my-1 mr-sm-2">
+                <option value="" {% if not availability %}selected{% endif %}>All Books</option>
+                <option value="available" {% if availability == 'available' %}selected{% endif %}>Available</option>
+                <option value="borrowed" {% if availability == 'borrowed' %}selected{% endif %}>Borrowed</option>
+            </select>
+
+            <label for="id_sort_by" class="my-1 mr-2">Sort by:</label>
+            <select name="sort_by" id="id_sort_by" class="custom-select my-1 mr-sm-2">
+                <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title (A-Z)</option>
+                <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>Title (Z-A)</option>
+                <option value="author" {% if sort_by == 'author' %}selected{% endif %}>Author</option>
+                <option value="published_date_desc" {% if sort_by == 'published_date_desc' %}selected{% endif %}>Newest First</option>
+            </select>
+
+            <button type="submit" class="btn btn-info my-1">Apply</button>
+            <a href="{% url 'book_list' %}" class="btn btn-secondary my-1 ml-2">Clear Filters</a>
+        </form>
+    </div>
 </div>
 
 {% if books %}
@@ -13,17 +42,32 @@
     {% for book in books %}
     <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm">
-            <div class="text-center mt-3 mb-3 text-muted">
-                [No Cover Image]
-            </div>
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="card-img-top book-cover mx-auto mt-3" alt="{{ book.title }} Cover">
+            {% else %}
+                <img src="{% static 'images/default_book_cover.png' %}" class="card-img-top book-cover mx-auto mt-3" alt="No Cover Available">
+            {% endif %}
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ book.title }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ book.author }}</h6>
                 <p class="card-text">ISBN: {{ book.isbn }}</p>
+
+                {# Updated status block using annotation directly #}
+                <p class="card-text">
+                    <strong>Status:</strong> 
+                    {% if book.is_borrowed %}
+                        <span class="badge badge-danger">Borrowed</span>
+                    {% else %}
+                        <span class="badge badge-success">Available</span>
+                    {% endif %}
+                </p>
+
                 <div class="mt-auto">
-                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-sm btn-info">View</a>
-                    <a href="{% url 'book_update' book.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'book_delete' book.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'book_detail' book.pk %}" class="btn btn-sm btn-info">View Details</a>
+                    {% if user.is_staff %} {# Only staff can edit/delete #}
+                        <a href="{% url 'book_update' book.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'book_delete' book.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -31,6 +75,10 @@
     {% endfor %}
 </div>
 {% else %}
-<p class="alert alert-info">No books found in the library. <a href="{% url 'book_create' %}" class="alert-link">Add one now!</a></p>
+<p class="alert alert-info">No books found matching your criteria.
+    {% if user.is_staff %}
+        <a href="{% url 'book_create' %}" class="alert-link">Add one now!</a>
+    {% endif %}
+</p>
 {% endif %}
 {% endblock %}

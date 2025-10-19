@@ -7,4 +7,19 @@ img.book-cover {
     max-width: 150px;
     height: auto;
     margin-bottom: 15px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+}
+img.book-cover-detail {
+    max-width: 250px;
+    height: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+.qr-code-img {
+    width: 200px; /* Or any desired size */
+    height: 200px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
 }

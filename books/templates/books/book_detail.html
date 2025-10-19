@@ -1,21 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ book.title }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card mb-4 shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>{{ book.title }} <small class="text-muted">by {{ book.author }}</small></h3>
                 <div>
-                    <a href="{% url 'book_update' book.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'book_delete' book.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    {% if user.is_staff %} {# Staff only #}
+                        <a href="{% url 'book_update' book.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'book_delete' book.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-12"> {# Adjusted from col-md-8 to col-md-12 #}
+                    <div class="col-md-4 text-center">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" class="img-fluid book-cover-detail" alt="{{ book.title }} Cover">
+                        {% else %}
+                            <img src="{% static 'images/default_book_cover.png' %}" class="img-fluid book-cover-detail" alt="No Cover Available">
+                        {% endif %}
+                        <div class="mt-3">
+                            {% if is_borrowed_by_current_user %}
+                                <p class="alert alert-warning">You have borrowed this book.</p>
+                                <a href="{% url 'return_book' book.pk %}" class="btn btn-success btn-block">Return This Book</a>
+                            {% elif is_currently_borrowed_by_anyone %}
+                                <p class="alert alert-danger">This book is currently unavailable.</p>
+                                <button type="button" class="btn btn-secondary btn-block" disabled>Unavailable</button>
+                            {% else %}
+                                <a href="{% url 'borrow_book' book.pk %}" class="btn btn-primary btn-block">Borrow This Book</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-8">
                         <p><strong>ISBN:</strong> {{ book.isbn }}</p>
                         {% if book.published_date %}
                         <p><strong>Published Date:</strong> {{ book.published_date }}</p>
@@ -29,6 +50,36 @@
                 <a href="{% url 'book_list' %}" class="btn btn-secondary">Back to List</a>
             </div>
         </div>
+
+        {# Recommendation Section #}
+        {% if recommended_books %}
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header">
+                <h4>Recommended Books</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for rec_book in recommended_books %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            {% if rec_book.cover_image %}
+                                <img src="{{ rec_book.cover_image.url }}" class="card-img-top book-cover mx-auto mt-2" alt="{{ rec_book.title }} Cover" style="max-width: 100px;">
+                            {% else %}
+                                <img src="{% static 'images/default_book_cover.png' %}" class="card-img-top book-cover mx-auto mt-2" alt="No Cover Available" style="max-width: 100px;">
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h6 class="card-title">{{ rec_book.title }}</h6>
+                                <p class="card-text text-muted small">{{ rec_book.author }}</p>
+                                <a href="{% url 'book_detail' rec_book.pk %}" class="btn btn-sm btn-outline-info">View</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}

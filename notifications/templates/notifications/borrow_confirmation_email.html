@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Borrowed Successfully!</title>
+</head>
+<body>
+    <p>Dear {{ user.username }},</p>
+    <p>This email confirms that you have successfully borrowed the following book:</p>
+    <ul>
+        <li><strong>Title:</strong> {{ borrowed_item.book.title }}</li>
+        <li><strong>Author:</strong> {{ borrowed_item.book.author }}</li>
+        <li><strong>Borrowed Date:</strong> {{ borrowed_item.borrow_date|date:"F d, Y" }}</li>
+        <li><strong>Due Date:</strong> {{ borrowed_item.due_date|date:"F d, Y" }}</li>
+    </ul>
+    <p>Please remember to return the book by its due date to avoid any late fees.</p>
+    <p>You can view your borrowed books here: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'borrowed_books_user' %}">My Borrowed Books</a></p>
+    <p>Thank you!</p>
+    <p>The Library Management Team</p>
+</body>
+</html>

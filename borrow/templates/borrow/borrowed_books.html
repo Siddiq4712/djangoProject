@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Borrowed Books{% endblock %}
+
+{% block content %}
+<h2>My Borrowed Books</h2>
+
+{% if borrowed_books %}
+<div class="row">
+    {% for item in borrowed_books %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm {% if item.is_overdue %}border-danger{% endif %}">
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    {% if item.book.cover_image %}
+                        <img src="{{ item.book.cover_image.url }}" class="book-cover mr-3" style="max-width: 80px;" alt="{{ item.book.title }} Cover">
+                    {% else %}
+                        <img src="{% static 'images/default_book_cover.png' %}" class="book-cover mr-3" style="max-width: 80px;" alt="No Cover Available">
+                    {% endif %}
+                    <div>
+                        <h5 class="card-title mb-0">{{ item.book.title }}</h5>
+                        <p class="card-subtitle text-muted">{{ item.book.author }}</p>
+                    </div>
+                </div>
+                
+                <p class="mb-1"><strong>Borrowed On:</strong> {{ item.borrow_date|date:"F d, Y" }}</p>
+                <p class="mb-1"><strong>Due Date:</strong> {{ item.due_date|date:"F d, Y" }}
+                    {% if item.is_overdue %}
+                        <span class="badge badge-danger ml-2">OVERDUE!</span>
+                    {% elif item.return_date %}
+                        <span class="badge badge-secondary ml-2">Returned</span>
+                    {% else %}
+                        <span class="badge badge-info ml-2">Active</span>
+                    {% endif %}
+                </p>
+                
+                {% if item.return_date %}
+                    <p class="mb-1"><strong>Returned On:</strong> {{ item.return_date|date:"F d, Y" }}</p>
+                {% endif %}
+
+                <div class="mt-auto pt-3 border-top">
+                    <a href="{% url 'book_detail' item.book.pk %}" class="btn btn-sm btn-info">View Book Details</a>
+                    {% if not item.return_date %} {# Only show return button if not already returned #}
+                        <a href="{% url 'return_book' item.book.pk %}" class="btn btn-sm btn-success">Return Book</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="alert alert-info">You have not borrowed any books yet.</p>
+<p><a href="{% url 'book_list' %}" class="btn btn-primary">Browse Available Books</a></p>
+{% endif %}
+{% endblock %}

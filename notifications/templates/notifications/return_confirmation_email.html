@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Returned Successfully!</title>
+</head>
+<body>
+    <p>Dear {{ user.username }},</p>
+    <p>This email confirms that you have successfully returned the following book:</p>
+    <ul>
+        <li><strong>Title:</strong> {{ borrowed_item.book.title }}</li>
+        <li><strong>Author:</strong> {{ borrowed_item.book.author }}</li>
+        <li><strong>Borrowed Date:</strong> {{ borrowed_item.borrow_date|date:"F d, Y" }}</li>
+        <li><strong>Returned Date:</strong> {{ borrowed_item.return_date|date:"F d, Y" }}</li>
+    </ul>
+    <p>Thank you for using our library!</p>
+    <p>The Library Management Team</p>
+</body>
+</html>

@@ -2,3 +2,6 @@ Django==4.2.11 # Or your preferred stable version
 django-crispy-forms==2.1
 crispy-bootstrap4==2023.1
 djangorestframework==3.15.1 # As per your request, though not fully used in this example
+Pillow==12.0.0
+qrcode==7.4.2
+reportlab==4.1.0 # For potential PDF generation if digital card becomes complex, or just HTML rendering for now.

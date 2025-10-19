@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Return Book{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h3>Return Book Confirmation</h3>
+            </div>
+            <div class="card-body">
+                <p>You are about to return "<strong>{{ book.title }}</strong>" by {{ book.author }}.</p>
+                <p>Originally borrowed on: {{ borrowed_item.borrow_date|date:"F d, Y" }}</p>
+                <p>Due date: {{ borrowed_item.due_date|date:"F d, Y" }}</p>
+                
+                {% if borrowed_item.is_overdue %}
+                    <p class="alert alert-danger">This book is overdue! Please return it promptly.</p>
+                {% else %}
+                    <p class="alert alert-success">This book is not yet overdue.</p>
+                {% endif %}
+
+                <p>Confirm return?</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Confirm Return</button>
+                    <a href="{% url 'borrowed_books_user' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

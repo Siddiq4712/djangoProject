@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Overdue Books Summary - Admin</title>
+</head>
+<body>
+    <p>Dear Admin,</p>
+    <p>Here is a summary of books currently overdue in the library:</p>
+    {% if overdue_items %}
+        <p>Total overdue books: {{ overdue_items|length }}</p>
+        <ul>
+            {% for item in overdue_items %}
+                <li>
+                    "{{ item.book.title }}" by {{ item.book.author }} (ISBN: {{ item.book.isbn }})<br>
+                    Borrowed by: {{ item.user.username }} ({{ item.user.email }})<br>
+                    Due Date: {{ item.due_date|date:"F d, Y" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No books are currently overdue.</p>
+    {% endif %}
+    <p>You can manage issued books here: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin_issued_books' %}">Admin Issued Books</a></p>
+    <p>Library Management System</p>
+</body>
+</html>

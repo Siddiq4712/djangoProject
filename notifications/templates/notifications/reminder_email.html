@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if type == 'overdue' %}Overdue Book Alert!{% else %}Book Due Soon Reminder{% endif %}</title>
+</head>
+<body>
+    <p>Dear {{ user.username }},</p>
+    {% if type == 'overdue' %}
+        <p>This is an urgent reminder that the following book you borrowed is now <strong>OVERDUE</strong>:</p>
+        <ul>
+            <li><strong>Title:</strong> {{ borrowed_item.book.title }}</li>
+            <li><strong>Author:</strong> {{ borrowed_item.book.author }}</li>
+            <li><strong>Due Date:</strong> {{ borrowed_item.due_date|date:"F d, Y" }}</li>
+        </ul>
+        <p>Please return it as soon as possible to avoid further late fees.</p>
+    {% else %} {# type == 'due_soon' #}
+        <p>This is a friendly reminder that the following book you borrowed is due soon:</p>
+        <ul>
+            <li><strong>Title:</strong> {{ borrowed_item.book.title }}</li>
+            <li><strong>Author:</strong> {{ borrowed_item.book.author }}</li>
+            <li><strong>Due Date:</strong> {{ borrowed_item.due_date|date:"F d, Y" }}</li>
+        </ul>
+        <p>Please remember to return it by the due date.</p>
+    {% endif %}
+    <p>You can view your borrowed books here: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'borrowed_books_user' %}">My Borrowed Books</a></p>
+    <p>Thank you for using our library!</p>
+    <p>The Library Management Team</p>
+</body>
+</html>
