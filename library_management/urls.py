@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')), # User-related URLs
     path('books/', include('books.urls')), # Book-related URLs
+    path('api/', include('api.urls')),
     path('', RedirectView.as_view(url='/books/', permanent=False), name='home'), # Redirect root to book list
 ]
 

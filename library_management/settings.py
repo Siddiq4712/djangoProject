@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # My apps
     'users',
     'books',
+    'api',
 ]
 
 MIDDLEWARE = [
