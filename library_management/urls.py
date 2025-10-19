@@ -12,7 +12,7 @@ urlpatterns = [
     # path('notifications/', include('notifications.urls')), # Notifications won't have direct user URLs
     path('analytics/', include('analytics.urls')), # ADD THIS LINE
     path('api/', include('api.urls')),
-    path('', RedirectView.as_view(url='/books/', permanent=False), name='home'),
+    path('', RedirectView.as_view(url='/users/login/', permanent=False), name='home'), # Redirect root to login page
 ]
 
 # Serve static and media files during development
